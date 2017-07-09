@@ -12,7 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 /**
@@ -20,11 +19,15 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
  */
 public class GoogleSearchTest {
 
+    public static WebDriver driver;
+    public static WebDriverWait wait;
+
     @BeforeClass
     public static void setUp() {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("marionette", false);
         driver = new FirefoxDriver(capabilities);
+        wait = new WebDriverWait(driver, 6);
     }
 
     @AfterClass
@@ -32,8 +35,6 @@ public class GoogleSearchTest {
         driver.quit();
     }
 
-    public static WebDriver driver;
-    public static WebDriverWait wait = new WebDriverWait(driver, 6);
 
     @Test
     public void testSearchThenFollowLink() throws Exception {
@@ -51,11 +52,11 @@ public class GoogleSearchTest {
         driver.findElement(By.name("q")).sendKeys(query + Keys.ENTER);
     }
 
-    public static void assertResultsAmount(int resultsAmount) {
+    public void assertResultsAmount(int resultsAmount) {
         wait.until(sizeOf(By.cssSelector(".srg>.g"), resultsAmount));
     }
 
-    public static void assertResult(int index, String text) {
+    public void assertResult(int index, String text) {
         wait.until(textToBePresentInElementLocated(By.cssSelector(String.format(".srg>.g:nth-child(%d)", index)), text));
     }
 
@@ -63,7 +64,7 @@ public class GoogleSearchTest {
         driver.findElements(By.cssSelector(".srg>.g")).get(index).findElement(By.cssSelector(".r>a")).click();
     }
 
-    public static ExpectedCondition<Boolean> sizeOf(final By elementsLocator, final int expectedSize){
+    public static ExpectedCondition<Boolean> sizeOf(final By elementsLocator, final int expectedSize) {
         return new ExpectedCondition<Boolean>() {
             private int listSize;
             private List<WebElement> elements;
