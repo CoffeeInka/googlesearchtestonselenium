@@ -45,7 +45,9 @@ public class GoogleSearchTest {
     }
 
     @Test
-    public void testFollowLink(){
+    public void testFollowLink() {
+        driver.get("http://google.com");
+        search("Selenium automates browsers");
         followLink(0);
         wait.until(urlContains("http://www.seleniumhq.org/"));
     }
@@ -64,7 +66,25 @@ public class GoogleSearchTest {
     }
 
     public void followLink(int index) {
+        wait.until(numberOfElementsToBeAtLeast(By.cssSelector(".srg>.g"), 1));
         driver.findElements(By.cssSelector(".srg>.g")).get(index).findElement(By.cssSelector(".r>a")).click();
+    }
+
+    public static ExpectedCondition<Boolean> numberOfElementsToBeAtLeast(final By elementsLocator, final int expectedSize) {
+        return new ExpectedCondition<Boolean>() {
+            private int listSize;
+            private List<WebElement> elements;
+
+            public Boolean apply(WebDriver driver) {
+                elements = driver.findElements(elementsLocator);
+                listSize = elements.size();
+                return listSize >= expectedSize;
+            }
+
+            public String toString() {
+                return String.format("\nsize of list: %s\n to be: %s\n while actual size is: %s\n", elements, expectedSize, listSize);
+            }
+        };
     }
 
     public static ExpectedCondition<Boolean> sizeOf(final By elementsLocator, final int expectedSize) {
