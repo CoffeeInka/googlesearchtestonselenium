@@ -22,16 +22,16 @@ public class GoogleSearchTest {
     public static WebDriver driver;
     public static WebDriverWait wait;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("marionette", false);
         driver = new FirefoxDriver(capabilities);
         wait = new WebDriverWait(driver, 6);
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @After
+    public void tearDown() {
         driver.quit();
     }
 
@@ -42,7 +42,10 @@ public class GoogleSearchTest {
         search("Selenium automates browsers");
         assertResultsAmount(10);
         assertResult(1, "for automating web applications for testing purposes");
+    }
 
+    @Test
+    public void testFollowLink(){
         followLink(0);
         wait.until(urlContains("http://www.seleniumhq.org/"));
     }
