@@ -55,7 +55,7 @@ public class GoogleSearchTest {
     }
 
     public void assertResult(int index, String text) {
-        wait.until(textToBePresentInElementLocated(By.cssSelector(String.format(".srg>.g:nth-child(%d)", index + 1)), text));
+        wait.until(textToBePresentInElementLocated(By.cssSelector(String.format(results+"nth-child(%d)", index + 1)), text));
     }
 
     public void followLink(int index) {
