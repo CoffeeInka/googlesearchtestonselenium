@@ -4,14 +4,11 @@ import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
-
+import static core.CustomConditions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 /**
@@ -19,8 +16,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
  */
 public class GoogleSearchTest {
 
-    public WebDriver driver;
-    public WebDriverWait wait;
+    public static WebDriver driver;
+    public static WebDriverWait wait;
+    public static String results = ".srg>.g";
 
     @Before
     public void setUp() {
@@ -35,13 +33,12 @@ public class GoogleSearchTest {
         driver.quit();
     }
 
-
     @Test
-    public void testSearchThenFollowLink() throws Exception {
+    public void testSearch() {
         driver.get("http://google.com");
         search("Selenium automates browsers");
         assertResultsAmount(10);
-        assertResult(1, "for automating web applications for testing purposes");
+        assertResult(0, "for automating web applications for testing purposes");
     }
 
     @Test
@@ -58,51 +55,20 @@ public class GoogleSearchTest {
     }
 
     public void assertResultsAmount(int resultsAmount) {
-        wait.until(sizeOf(By.cssSelector(".srg>.g"), resultsAmount));
+        wait.until(sizeOf(By.cssSelector(results), resultsAmount));
     }
 
     public void assertResult(int index, String text) {
-        wait.until(textToBePresentInElementLocated(By.cssSelector(String.format(".srg>.g:nth-child(%d)", index)), text));
+        wait.until(textToBePresentInElementLocated(By.cssSelector(String.format(results + ":nth-child(%d)", index + 1)), text));
     }
 
     public void followLink(int index) {
-        wait.until(numberOfElementsToBeAtLeast(By.cssSelector(".srg>.g"), 1));
-        driver.findElements(By.cssSelector(".srg>.g")).get(index).findElement(By.cssSelector(".r>a")).click();
+        if (index == 0) {
+            wait.until(minimumSizeOf(By.cssSelector(results), 1));
+        } else {
+            wait.until(minimumSizeOf(By.cssSelector(results), index));
+        }
+        driver.findElements(By.cssSelector(results)).get(index).findElement(By.cssSelector(".r>a")).click();
     }
-
-    public static ExpectedCondition<Boolean> numberOfElementsToBeAtLeast(final By elementsLocator, final int expectedSize) {
-        return new ExpectedCondition<Boolean>() {
-            private int listSize;
-            private List<WebElement> elements;
-
-            public Boolean apply(WebDriver driver) {
-                elements = driver.findElements(elementsLocator);
-                listSize = elements.size();
-                return listSize >= expectedSize;
-            }
-
-            public String toString() {
-                return String.format("\nsize of list: %s\n to be: %s\n while actual size is: %s\n", elements, expectedSize, listSize);
-            }
-        };
-    }
-
-    public static ExpectedCondition<Boolean> sizeOf(final By elementsLocator, final int expectedSize) {
-        return new ExpectedCondition<Boolean>() {
-            private int listSize;
-            private List<WebElement> elements;
-
-            public Boolean apply(WebDriver driver) {
-                elements = driver.findElements(elementsLocator);
-                listSize = elements.size();
-                return listSize == expectedSize;
-            }
-
-            public String toString() {
-                return String.format("\nsize of list: %s\n to be: %s\n while actual size is: %s\n", elements, expectedSize, listSize);
-            }
-        };
-    }
-
 
 }
