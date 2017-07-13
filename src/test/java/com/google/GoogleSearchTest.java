@@ -19,8 +19,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
  */
 public class GoogleSearchTest {
 
-    public static WebDriver driver;
-    public static WebDriverWait wait;
+    public WebDriver driver;
+    public WebDriverWait wait;
 
     @Before
     public void setUp() {
