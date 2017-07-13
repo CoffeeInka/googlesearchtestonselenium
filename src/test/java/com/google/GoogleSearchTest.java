@@ -16,9 +16,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
  */
 public class GoogleSearchTest {
 
-    public static WebDriver driver;
-    public static WebDriverWait wait;
-    public static String results = ".srg>.g";
+    public WebDriver driver;
+    public WebDriverWait wait;
+    public String results = ".srg>.g";
 
     @Before
     public void setUp() {
@@ -63,11 +63,7 @@ public class GoogleSearchTest {
     }
 
     public void followLink(int index) {
-        if (index == 0) {
-            wait.until(minimumSizeOf(By.cssSelector(results), 1));
-        } else {
-            wait.until(minimumSizeOf(By.cssSelector(results), index));
-        }
+        wait.until(minimumSizeOf(By.cssSelector(results), index+1));
         driver.findElements(By.cssSelector(results)).get(index).findElement(By.cssSelector(".r>a")).click();
     }
 
